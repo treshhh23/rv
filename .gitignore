@@ -1,0 +1,25 @@
+# Python Virtual Environment
+venv/
+.env
+.venv
+
+# Python Cache
+__pycache__/
+*.py[cod]
+
+# Cocotb & Verilator Artifacts
+sim_build/
+dump.vcd
+results.xml
+
+# Quartus/FPGA specific (Good to have for later)
+db/
+incremental_db/
+output_files/
+*.qpf
+*.qsf
+*.sof
+*.pof
+
+# OS Junk
+.DS_Store

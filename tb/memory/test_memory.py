@@ -8,23 +8,23 @@ from cocotb.triggers import RisingEdge, Timer
 @cocotb.test()
 async def memory_data_test(dut):
     # Start a 10 ns clock
-    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 10, unit="ns").start())
     await RisingEdge(dut.clk)
 
     # Reset
-    dut.rst_n.value = 0
+    dut.reset_n.value = 0
     dut.write_enable.value = 0
     dut.address.value = 0
     dut.write_data.value = 0  
 
     await RisingEdge(dut.clk)    
-    dut.rst_n.value = 1 
+    dut.reset_n.value = 1 
     await RisingEdge(dut.clk)  
 
     # All is 0 after reset
-    for address in range(dut.WORDS.value):
+    for address in range(dut.mem_words.value):
         dut.address.value = address
-        await Timer(1, units="ns")
+        await Timer(1, unit="ns")
         assert dut.read_data.value == "00000000000000000000000000000000"
       
     # Test: Write and read back data

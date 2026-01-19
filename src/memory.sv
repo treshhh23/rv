@@ -1,4 +1,3 @@
-`include "state_params.h"
 
 `timescale 1ns/100ps
 `default_nettype none
@@ -13,7 +12,8 @@ module memory (
     output logic [31:0] read_data
 );
 
-logic [31:0] mem [0:mem_words-1];
+parameter mem_words = 64;
+logic [31:0] mem [mem_words-1:0];
 
 always_ff@(posedge clk) begin
     if(~reset_n) begin
@@ -21,11 +21,11 @@ always_ff@(posedge clk) begin
     end else begin
         if(write_enable) begin
             if(address[1:0] == 2'b00) begin
-               mem[address[31:2]] <= write_data;     
+               mem[address[7:2]] <= write_data;     
             end
         end
 
-        read_data <= mem[address[31:2]];
+        read_data <= mem[address[7:2]];
 
     end
 end
