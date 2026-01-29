@@ -13,7 +13,7 @@ module memory (
 );
 
 parameter mem_words = 64;
-logic [31:0] mem [mem_words-1:0];
+logic [31:0] mem [0:mem_words-1];
 
 always_ff@(posedge clk) begin
     if(~reset_n) begin
