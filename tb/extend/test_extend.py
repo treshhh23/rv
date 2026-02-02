@@ -29,5 +29,34 @@ async def extend_test(dut):
     assert int(dut.extend_imm.value) - (1 << 32) == -2
 
 
+@cocotb.test()
+async def signext_s_type_test(dut):
+    await Timer(1, unit="ns")
+    imm = random.randint(0,0b01111111111) 
+    imm_11_5 = imm >> 5
+    imm_4_0 = imm & 0b000000011111
+
+    raw_data = ((imm_11_5) << 18 ) | imm_4_0
+    source = 0b01
+    dut.raw_code.value = raw_data
+    dut.imm_src.value = source
+    await Timer(1, unit='ns')
+    assert dut.extend_imm.value == imm
+    
+    await Timer(1, unit="ns")
+    imm = random.randint(0b100000000000,0b111111111111) - (1 << 12)
+    imm_11_5 = imm >> 5
+    imm_4_0 = imm & 0b000000011111
+
+    raw_data = ((imm_11_5) << 18 ) | imm_4_0
+    source = 0b01
+    dut.raw_code.value = raw_data
+    dut.imm_src.value = source
+    await Timer(1, unit='ns')
+    assert int(dut.extend_imm.value) - (1 << 32) == imm
+
+
+
+
 
 

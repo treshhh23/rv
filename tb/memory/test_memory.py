@@ -22,7 +22,7 @@ async def memory_data_test(dut):
     await RisingEdge(dut.clk)  
 
     # All is 0 after reset
-    for address in range(dut.mem_words.value):
+    for address in range(dut.WORDS.value):
         dut.address.value = address
         await Timer(1, unit="ns")
         assert dut.read_data.value == "00000000000000000000000000000000"

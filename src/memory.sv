@@ -1,38 +1,41 @@
 
-`timescale 1ns/100ps
-`default_nettype none
-
-module memory (
+module memory #(
+    parameter WORDS = 64,
+    parameter mem_init = ""
+) (
     input logic clk,
     input logic [31:0] address,
     input logic [31:0] write_data,
     input logic write_enable,
     input logic reset_n,
-    
+
     output logic [31:0] read_data
 );
 
-parameter mem_words = 64;
-logic [31:0] mem [0:mem_words-1];
+reg [31:0] mem [0:WORDS-1];  // Memory array of words (32-bits)
 
-always_ff@(posedge clk) begin
-    if(~reset_n) begin
-        read_data <= 32'b0;
-    end else begin
-        if(write_enable) begin
-            if(address[1:0] == 2'b00) begin
-               mem[address[7:2]] <= write_data;     
-            end
+localparam INDEX_BITS = $clog2(WORDS);
+logic [INDEX_BITS-1:0] internal_addr;
+assign internal_addr = address[INDEX_BITS+1 : 2];
+
+always @(posedge clk) begin
+    if (reset_n == 1'b0) begin
+        for (int i = 0; i < WORDS; i++) begin
+            mem[i] <= 32'b0;  
         end
-
-        read_data <= mem[address[7:2]];
-
+    end
+    else if (write_enable) begin
+        if (address[1:0] == 2'b00) begin 
+            mem[internal_addr] <= write_data;
+        end
     end
 end
 
+always_comb begin
+    read_data = mem[internal_addr]; 
+end
+
 initial begin
-    $readmemh("util/memory_init.hex", mem);
+    $readmemh(mem_init, mem);  // Load memory for simulation
 end
 endmodule
-
-`default_nettype wire

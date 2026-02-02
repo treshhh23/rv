@@ -13,6 +13,7 @@ logic [11:0] imm;
 always_comb begin
     case(imm_src)
         2'b00 : imm = raw_code[24:13];
+        2'b01 : imm = {raw_code[24:18], raw_code[4:0]};
         default : imm = 12'b0;
     endcase
 end
